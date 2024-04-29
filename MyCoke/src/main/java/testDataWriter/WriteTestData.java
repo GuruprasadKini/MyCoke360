@@ -22,7 +22,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class WriteTestData {
     private static final String TEST_DATA_FILE_PATH = "C:/Users/PC-1/eclipse-workspace/MyCoke/src/main/resources/TestData.xlsx";
     private static final String USER_DATA_FILE_PATH = "C:/Users/PC-1/eclipse-workspace/MyCoke/src/main/resources/UserData.xlsx";
-    private static final String PRELIMINARY_DATA_FILE_PATH = "C:/Users/PC-1/eclipse-workspace/MyCoke/src/main/resources/PreliminaryData.xlsx";
     static int RowNum = 1;
     static FileOutputStream fileOut;
     static XSSFWorkbook workbook2;
@@ -34,23 +33,23 @@ public class WriteTestData {
 	            XSSFSheet sheet2 = workbook2.createSheet();
 	            Scanner threads = new Scanner(System.in);
 	    		System.out.print("Enter number of virtual users for MyCoke360 Performance Test for this system: ");
-	    		int totalRows = (int)(threads.nextInt()*24);; // Set the total number of rows
+	    		int totalRows = (int)(threads.nextInt());; // Set the total number of rows
 	    		//Set markers for Line items 
-	    		//20% of items are 20+
-	    		int lowerWeightage = (int) (totalRows*0.2);
-		    		int thirty = lowerWeightage/4;
-		    		int twentyfive = thirty + lowerWeightage/4;
+	    		//50% of items are between 1-10
+	    		int lowerWeightage = (int) (totalRows*0.5);//300
+		    		int two = lowerWeightage/4; //75
+		    		int five = two + lowerWeightage/4;//150
+		    		int eight = five + lowerWeightage/4;//225
+		    		int ten = eight + lowerWeightage/4;//300
 	    		//30% of items are between 11-20
-		    	int midWeightage = lowerWeightage + (int) (totalRows*0.3);
-		    		int eighteen = midWeightage/4;
-		    		int fifteen = eighteen + midWeightage/4;
-		    		int twelve = fifteen + midWeightage/4;
-	    		//50% of items are between 1 -10
-		    	int topWeightage = midWeightage + (int) (totalRows*0.5);
-		    		int ten = topWeightage/4;
-		    		int eight = ten + topWeightage/4;
-		    		int five = eight + topWeightage/4;
-		    		int two = five + topWeightage/4;
+		    	int midWeightage = (int) (totalRows*0.3);//180
+		    		int twelve = ten + midWeightage/3;//360
+		    		int fifteen = twelve + midWeightage/3;//84
+		    		int eighteen = fifteen + midWeightage/3;//96
+	    		//10% of items are 20+
+		    	int topWeightage = (int) (totalRows*0.2);//24
+		    		int twentyfive = eighteen + topWeightage/2;//108
+		    		int thirty = twentyfive + topWeightage/2;//120
 
 	            // Create the header row outside the loop
 	            XSSFRow headerRow = sheet2.createRow(0);
@@ -81,35 +80,32 @@ public class WriteTestData {
 	                        
 	                    }
 	                    else if (cellNum == 1) {
-	                    	if(rownumber <= twentyfive) {
+	                    	if(rownumber <= two) {
 	                    		cell.setCellValue("2");
 	                    	}
-	                    	if(rownumber <= thirty) {
-	                    		cell.setCellValue("30");
-	                    	}
-	                    	if(rownumber > thirty && rownumber <= twentyfive) {
-	                    		cell.setCellValue("25");
-	                    	}
-	                    	if(rownumber > twentyfive && rownumber <= eighteen) {
-	                    		cell.setCellValue("18");
-	                    	}
-	                    	if(rownumber > eighteen && rownumber <= fifteen) {
-	                    		cell.setCellValue("15");
-	                    	}
-	                    	if(rownumber > fifteen && rownumber <= twelve) {
-	                    		cell.setCellValue("12");
-	                    	}
-	                    	if(rownumber > twelve && rownumber <= ten) {
-	                    		cell.setCellValue("10");
-	                    	}
-	                    	if(rownumber > ten && rownumber <= eight) {
-	                    		cell.setCellValue("8");
-	                    	}
-	                    	if(rownumber > eight && rownumber <= five) {
+	                    	if(rownumber > two && rownumber <= five) {
 	                    		cell.setCellValue("5");
 	                    	}
-	                    	if(rownumber > five && rownumber <= two) {
-	                    		cell.setCellValue("2");
+	                    	if(rownumber > five && rownumber <= eight) {
+	                    		cell.setCellValue("8");
+	                    	}
+	                    	if(rownumber > eight && rownumber <= ten) {
+	                    		cell.setCellValue("10");
+	                    	}
+	                    	if(rownumber > ten && rownumber <= twelve) {
+	                    		cell.setCellValue("12");
+	                    	}
+	                    	if(rownumber > twelve && rownumber <= fifteen) {
+	                    		cell.setCellValue("15");
+	                    	}
+	                    	if(rownumber > fifteen && rownumber <= eighteen) {
+	                    		cell.setCellValue("18");
+	                    	}
+	                    	if(rownumber > eighteen && rownumber <= twentyfive) {
+	                    		cell.setCellValue("25");
+	                    	}
+	                    	if(rownumber > twentyfive && rownumber <= thirty) {
+	                    		cell.setCellValue("30");
 	                    	}
 	                    }
 	                    else if (cellNum > 1 && cellNum < 32) {
@@ -126,64 +122,6 @@ public class WriteTestData {
 	        }
 	    }
 	
-//	 public static void ExcelDataCopier() {
-//		// Input and output file paths
-//	        String inputFile = PRELIMINARY_DATA_FILE_PATH;
-//	        String outputFile = TEST_DATA_FILE_PATH;
-//	        
-//	        try {
-//	            // Load the input Excel file
-//	            FileInputStream fis = new FileInputStream(inputFile);
-//	            XSSFWorkbook workbook = new XSSFWorkbook(fis);
-//	            fis.close();
-//
-//	            // Get the first sheet
-//	            sheet = workbook.getSheetAt(0);
-//
-//	            // Determine the total number of rows with data
-//	            int totalRowsWithData = sheet.getLastRowNum() + 1;
-//
-//	            // Calculate the end row for copying
-//	            int endRow = totalRowsWithData * 24;
-//
-//	            // Copy the data until the end row
-//	            int rowCount = 0;
-//	            while (rowCount < endRow) {
-//	                // Copy rows from 1 to totalRowsWithData
-//	                for (int i = 1; i <= totalRowsWithData; i++) {
-//	                    XSSFRow originalRow = sheet.getRow(i - 1); // -1 because rows are 0-indexed
-//	                    XSSFRow newRow = sheet.createRow(rowCount++);
-//	                    if (originalRow != null) {
-//	                        for (int j = originalRow.getFirstCellNum(); j < originalRow.getLastCellNum(); j++) {
-//	                            XSSFCell originalCell = originalRow.getCell(j);
-//	                            XSSFCell newCell = newRow.createCell(j);
-//	                            if (originalCell != null) {
-//	                            	switch (originalCell.getCellType()) {
-//                                    case STRING:
-//                                        newCell.setCellValue(originalCell.getStringCellValue());
-//                                        break;
-//                                    case NUMERIC:
-//                                        newCell.setCellValue(originalCell.getNumericCellValue());
-//                                    default:
-//                                        newCell.setCellValue(originalCell.toString());
-//                                }
-//	                            }
-//	                        }
-//	                    }
-//	                }
-//	            }
-//
-//	            // Write the output to a new Excel file
-//	            FileOutputStream fos = new FileOutputStream(outputFile);
-//	            workbook.write(fos);
-//	            fos.close();
-//	            workbook.close();
-//	            System.out.println("Data copied successfully!");
-//
-//	        } catch (Exception e) {
-//	            e.printStackTrace();
-//	        }
-//	 }
 	 public static void excelToCsv() throws IOException {
   	   FileInputStream fileIn = new FileInputStream(TEST_DATA_FILE_PATH);
          @SuppressWarnings("resource")
@@ -219,7 +157,6 @@ public class WriteTestData {
 		 try {
 			 GetUserData.getCredentials(USER_DATA_FILE_PATH);
 			 writeUserData();
-//			 ExcelDataCopier();
 			 excelToCsv();	
 			 System.out.print("Your data is in the file path - C:\\apache-jmeter-5.5\\apache-jmeter-5.5\\bin\\TestData.csv");
 		 }
