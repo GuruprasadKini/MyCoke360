@@ -26,30 +26,29 @@ public class WriteTestData {
     static FileOutputStream fileOut;
     static XSSFWorkbook workbook2;
     static XSSFSheet sheet;
+    static String[] SKUs;
 
-	 public static void writeUserData() throws IOException {
+	 public static void writeUserData(int totalRows) throws IOException {
 	        try (FileOutputStream fileOut = new FileOutputStream(TEST_DATA_FILE_PATH)) {
 	            workbook2 = new XSSFWorkbook();
 	            XSSFSheet sheet2 = workbook2.createSheet();
-	            Scanner threads = new Scanner(System.in);
-	    		System.out.print("Enter number of virtual users for MyCoke360 Performance Test for this system: ");
-	    		int totalRows = (int)(threads.nextInt());; // Set the total number of rows
+	            
 	    		//Set markers for Line items 
 	    		//50% of items are between 1-10
-	    		int lowerWeightage = (int) (totalRows*0.5);//300
-		    		int two = lowerWeightage/4; //75
-		    		int five = two + lowerWeightage/4;//150
-		    		int eight = five + lowerWeightage/4;//225
-		    		int ten = eight + lowerWeightage/4;//300
+	    		int lowerWeightage = (int) (totalRows*0.5);
+		    		int two = lowerWeightage/4; 
+		    		int five = two + lowerWeightage/4;
+		    		int eight = five + lowerWeightage/4;
+		    		int ten = eight + lowerWeightage/4;
 	    		//30% of items are between 11-20
-		    	int midWeightage = (int) (totalRows*0.3);//180
-		    		int twelve = ten + midWeightage/3;//360
-		    		int fifteen = twelve + midWeightage/3;//84
-		    		int eighteen = fifteen + midWeightage/3;//96
+		    	int midWeightage = (int) (totalRows*0.3);
+		    		int twelve = ten + midWeightage/3;
+		    		int fifteen = twelve + midWeightage/3;
+		    		int eighteen = fifteen + midWeightage/3;
 	    		//10% of items are 20+
-		    	int topWeightage = (int) (totalRows*0.2);//24
-		    		int twentyfive = eighteen + topWeightage/2;//108
-		    		int thirty = twentyfive + topWeightage/2;//120
+		    	int topWeightage = (int) (totalRows*0.2);
+		    		int twentyfive = eighteen + topWeightage/2;
+		    		int thirty = twentyfive + topWeightage/2;
 
 	            // Create the header row outside the loop
 	            XSSFRow headerRow = sheet2.createRow(0);
@@ -61,23 +60,21 @@ public class WriteTestData {
 	            }
 
 	            // Loop through rows
-	            for (int rownumber = 1; rownumber <= totalRows; rownumber++) {
+	            for (int rownumber = 1; rownumber <= totalRows ; rownumber++) {
 	                XSSFRow row = sheet2.createRow(rownumber);
 	                Random random = new Random();
-	                
-	                if(index > 600) {
-	                	index = 0;
-	                }
-	                
-	                String currentUsername = GetUserData.username[(index)];
-	                
+	                String currentUsername = GetUserData.username[rownumber - 1];
+//	                System.out.println(currentUsername);
+	                String currentAccountId = GetUserData.UserData.get(currentUsername);
+	                SKUs = GetUserData.accountData.get(currentAccountId);
+//	            	System.out.println(SKUs[0]);
+	                index++;
 	                // Loop through cells
 	                for (int cellNum = 0; cellNum < 92; cellNum++) {
 	                    XSSFCell cell = row.createCell(cellNum);
 
 	                    if (cellNum == 0) {
 	                        cell.setCellValue(currentUsername);
-	                        
 	                    }
 	                    else if (cellNum == 1) {
 	                    	if(rownumber <= two) {
@@ -109,7 +106,7 @@ public class WriteTestData {
 	                    	}
 	                    }
 	                    else if (cellNum > 1 && cellNum < 32) {
-	                    	cell.setCellValue(GetUserData.SKU[cellNum - 2]);
+	                    		cell.setCellValue(SKUs[cellNum - 2]);
 	                    }
 	                    else if (cellNum > 31 && cellNum < 92) {
 	                        cell.setCellValue(random.nextInt(10) + 1);
@@ -155,8 +152,11 @@ public class WriteTestData {
 	 
 	 public static void main(String[] args) {
 		 try {
-			 GetUserData.getCredentials(USER_DATA_FILE_PATH);
-			 writeUserData();
+			 Scanner threads = new Scanner(System.in);
+	    	 System.out.print("Enter number of virtual users for MyCoke360 Performance Test for this system: ");
+	    	 int totalRows = (int)(threads.nextInt());; // Set the total number of rows
+			 GetUserData.getCredentials(USER_DATA_FILE_PATH, totalRows);
+			 writeUserData(totalRows);
 			 excelToCsv();	
 			 System.out.print("Your data is in the file path - C:\\apache-jmeter-5.5\\apache-jmeter-5.5\\bin\\TestData.csv");
 		 }
