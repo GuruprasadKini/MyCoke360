@@ -13,13 +13,22 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import org.json.JSONObject;
+
 public class GetUserData {
 	 	static Map<String, String> UserData = new HashMap<>();;
 	 	static Map<String, String[]> accountData = new HashMap<>();
-	 	static String [] username = new String[601];
+	 	static String [] username = new String[1801];
 	    static int RowNum = 1;
 	    static FileOutputStream fileOut;
 	    static XSSFSheet sheet;
+	    static String access_Token;
 	    
 	public static void getCredentials(String filePath, int users) throws IOException {
         try (FileInputStream fileIn = new FileInputStream(filePath)) {
@@ -48,10 +57,27 @@ public class GetUserData {
 	               accountData.put(currentAccountId, SKUs);                	
 	            }	 
             }
-            System.out.println(accountData);
             workbook.close();
             fileIn.close();
         }
+	}
+	public static void getAccessToken() throws IOException {
+		OkHttpClient client = new OkHttpClient().newBuilder()
+				  .build();
+				MediaType mediaType = MediaType.parse("text/plain");
+				RequestBody body = RequestBody.create(mediaType, "");
+				Request request = new Request.Builder()
+				  .url("https://cona--lfln012.sandbox.my.salesforce.com/services/oauth2/token?client_id=3MVG9EMJF5MdlzDpwkTqS3Z06ccHdrpzYbwlj.PSZWX4DESHHs.D4xsv6vye4JPLDl9UpdIlpnzNfUx500vQq&client_secret=64C750BE75DE190D1FC3A6FC95E82BE7BBF96529356F7504BA8BE7B29DFB0B26&grant_type=client_credentials")
+				  .method("POST", body)
+				  .addHeader("Cookie", "BrowserId=TNnxFZQrEe65CA1jhtBqdQ; CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1")
+				  .build();
+				Response response = client.newCall(request).execute();
+				// Parse JSON response
+				String responseBody = response.body().string();
+		        JSONObject json = new JSONObject(responseBody);
+		        // Get the access token
+		        access_Token = json.getString("access_token");
+				response.close();
 	}
 }
 
